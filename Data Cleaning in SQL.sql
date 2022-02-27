@@ -1,14 +1,8 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
 SELECT * FROM [PortfolioProjects].[dbo].[NashvilleHousing]
 
 -- Standardize date format by removing time zone
 
 Select SaleDate, CONVERT(Date, SaleDate) From PortfolioProjects..NashvilleHousing
-
-Update NashvilleHousing
-SET SaleDate = CONVERT(Date, SaleDate)
-
-
 
 ALTER TABLE NashvilleHousing
 ADD SaleDateConverted Date;
@@ -16,9 +10,8 @@ ADD SaleDateConverted Date;
 Update NashvilleHousing
 SET SaleDateConverted = CONVERT(Date, SaleDate)
 
-Select SaleDateConverted From PortfolioProjects..NashvilleHousing
+-- Populating Property address because we have some null values with reference point ParcelId
 
--- Populationg Property address because we have some null values with reference point ParcelId
 Select a.ParcelID, a.PropertyAddress, b.ParcelID, b.PropertyAddress From NashvilleHousing a
 Join NashvilleHousing b
 	on a.ParcelID = b.ParcelID
@@ -33,8 +26,8 @@ Join NashvilleHousing b
 	AND a.[UniqueID ] <> b.[UniqueID ]
 Where a.PropertyAddress is null
 
+
 -- Breaking out address into individual columns by splitting address and cities
-Select PropertyAddress from NashvilleHousing
 
 Select 
 SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1) As Address,
@@ -57,9 +50,8 @@ SET PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddres
 
 
 -- Heare we are going to split the owner address into address, city and state
-SELECT OwnerAddress FROM PortfolioProjects..NashvilleHousing
-
 -- PARSNAME Will look for dot so we have used REPLACE function from backwards so when we run 1,2,3 it will give State, city and address
+
 Select 
 PARSENAME(REPLACE(OwnerAddress, ',', '.'), 1),
 PARSENAME(REPLACE(OwnerAddress, ',', '.'), 2) ,
