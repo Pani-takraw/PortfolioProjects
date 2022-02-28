@@ -1,4 +1,5 @@
 -- Creating a table "EmployeeDetails"
+DROP Table if exist EmployeeDetails           -- This command will drop the table "EmployeeDetails" if it already exists in the DB
 Create Table EmployeeDetails (
 EmployeeID int,
 FirstName Varchar(100),
