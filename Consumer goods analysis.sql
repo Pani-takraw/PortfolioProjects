@@ -37,7 +37,7 @@ From fact_manufacturing_cost m
 Join dim_product p 
 	on m.product_code = p.product_code
 Where manufacturing_cost = (Select max(manufacturing_cost) from fact_manufacturing_cost)
-or manufacturing_cost = (Select min(manufacturing_cost) from fact_manufacturing_cost);
+			or manufacturing_cost = (Select min(manufacturing_cost) from fact_manufacturing_cost);
     
 -- Generate a report which contains the top 5 customers who received an average high pre_invoice_discount_pct 
 -- for the fiscal year 2021 and in the Indian market.
@@ -64,12 +64,12 @@ where customer  = 'Atliq Exclusive'
 
 -- In which quarter of 2020, got the maximum total_sold_quantity
 Select date, 
-	CASE when Month(date) IN (9,10,11) then "Q1"
+	CASE 	 when Month(date) IN (9,10,11) then "Q1"
 		 When  Month(date) IN (12,1,2) then "Q2"
-         When Month(date) IN (3,4,5) then "Q3"
+        	 When Month(date) IN (3,4,5) then "Q3"
 		 Else "Q4" 
-    End  as Quarter,
-	Sum(sold_quantity)/1000000 as total_sold_quantity
+    	End  as Quarter,
+Sum(sold_quantity)/1000000 as total_sold_quantity
 From fact_sales_monthly
 WHERE fiscal_year = 2020
 	group by Quarter
@@ -80,7 +80,7 @@ Select c.channel, gp.gross_price, sm.sold_quantity,SUM(gross_price * sold_quanti
 from fact_gross_price gp
 Join fact_sales_monthly sm
 	on gp.product_code = sm.product_code
-AND gp.fiscal_year = sm.fiscal_year
+	AND gp.fiscal_year = sm.fiscal_year
 Join dim_customer c
 	on c.customer_code = sm.customer_code
 Group by channel;
@@ -90,10 +90,9 @@ with cte as (
 Select p.division, p.product_code, p.product, fm.sold_quantity,SUM(sold_quantity) as total_sold_quantity
 From dim_product p
 Join fact_sales_monthly fm
-on p.product_code = fm.product_code
+	on p.product_code = fm.product_code
 where fm.fiscal_year = 2021
-Group by p.division, p.product_code, p.product
-),
+	Group by p.division, p.product_code, p.product),
 cte2 as(
 Select *,
 	Rank() Over(partition by division order by total_sold_quantity desc)  as Top_3
